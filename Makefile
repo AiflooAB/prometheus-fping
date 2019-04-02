@@ -36,7 +36,7 @@ $(PACKAGE_DIR)/lib/systemd/system/%: sys/lib/systemd/system/%
 	@mkdir -p $(PACKAGE_DIR)/lib/systemd/system
 	cp -r "$<" "$@"
 
-$(PACKAGE_DIR)/usr/bin/$(NAME): main.go $(wildcard pkg/**.go)
+$(PACKAGE_DIR)/usr/bin/$(NAME): main.go $(shell find pkg -type f -iname "*.go")
 	@mkdir -p "$(dir $@)"
 	go build -o "$@"
 
