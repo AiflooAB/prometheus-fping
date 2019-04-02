@@ -12,7 +12,7 @@ $(OUT_DIR):
 $(PACKAGE_DIR): \
 	$(PACKAGE_DIR)/DEBIAN \
 	$(PACKAGE_DIR)/lib/systemd/system/$(NAME).service \
-	$(PACKAGE_DIR)/usr/bin/prometheus-fping \
+	$(PACKAGE_DIR)/usr/bin/$(NAME) \
 
 	@touch "$@"
 
@@ -36,7 +36,7 @@ $(PACKAGE_DIR)/lib/systemd/system/%: sys/lib/systemd/system/%
 	@mkdir -p $(PACKAGE_DIR)/lib/systemd/system
 	cp -r "$<" "$@"
 
-$(PACKAGE_DIR)/usr/bin/prometheus-fping: main.go $(wildcard pkg/**.go)
+$(PACKAGE_DIR)/usr/bin/$(NAME): main.go $(wildcard pkg/**.go)
 	@mkdir -p "$(dir $@)"
 	go build -o "$@"
 
