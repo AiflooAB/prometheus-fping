@@ -5,6 +5,7 @@ After=network.target
 [Service]
 User=prometheus-fping
 Group=prometheus-fping
+EnvironmentFile=-/etc/prometheus-fping/environment
 ExecStart=/usr/bin/prometheus-fping
 PrivateTmp=true
 PrivateDevices=true
