@@ -16,8 +16,13 @@ type FpingProcess struct {
 func NewFpingProcess(network string) *FpingProcess {
 	return &FpingProcess{
 		Responses: make(chan *Response),
-		cmd:       exec.Command("fping", "--addr", "--elapsed", "--loop", "--generate", network),
-		stopping:  false,
+		// Long options were introduced in fping 4
+		// -A, --addr
+		// -e, --elapsed
+		// -l, --loop
+		// -g, --generate addr/mask
+		cmd:      exec.Command("fping", "-A", "-e", "-l", "-g", network),
+		stopping: false,
 	}
 }
 
