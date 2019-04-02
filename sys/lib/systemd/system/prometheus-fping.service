@@ -1,5 +1,5 @@
 [Unit]
-Description=Prometheus
+Description=Prometheus network response time exporter
 After=network.target
 
 [Service]
