@@ -43,7 +43,7 @@ func main() {
 
 	// Expose the registered metrics via HTTP.
 	http.Handle("/metrics", promhttp.Handler())
-	go func() { log.Fatal(http.ListenAndServe("0.0.0.0:4000", nil)) }()
+	go func() { log.Fatal(http.ListenAndServe("0.0.0.0:9299", nil)) }()
 
 	for {
 		select {
