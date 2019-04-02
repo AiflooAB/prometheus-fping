@@ -26,7 +26,8 @@ case "$1" in
     fi
 
       systemctl daemon-reload
-      systemctl enable --now prometheus-fping.service
+      systemctl enable prometheus-fping.service
+      systemctl restart prometheus-fping.service
     ;;
 
     abort-upgrade|abort-remove|abort-deconfigure)
