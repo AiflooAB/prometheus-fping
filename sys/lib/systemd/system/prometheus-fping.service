@@ -8,13 +8,10 @@ Group=prometheus-fping
 EnvironmentFile=-/etc/prometheus-fping/environment
 ExecStart=/usr/bin/prometheus-fping
 PrivateTmp=true
-PrivateDevices=true
 ProtectHome=true
-NoNewPrivileges=true
 ProtectSystem=strict
 ProtectControlGroups=true
-ProtectKernelModules=true
-ProtectKernelTunables=true
+RestartSec=1s
 
 SyslogIdentifier=prometheus-fping
 Restart=always
