@@ -13,10 +13,10 @@ type FpingProcess struct {
 	stopping  bool
 }
 
-func NewFpingProcess() *FpingProcess {
+func NewFpingProcess(network string) *FpingProcess {
 	return &FpingProcess{
 		Responses: make(chan *Response),
-		cmd:       exec.Command("fping", "--addr", "--elapsed", "--loop", "--generate", "192.168.1.0/24"),
+		cmd:       exec.Command("fping", "--addr", "--elapsed", "--loop", "--generate", network),
 		stopping:  false,
 	}
 }

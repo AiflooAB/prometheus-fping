@@ -3,9 +3,11 @@ package main
 import (
 	"fmt"
 	"log"
+	"net"
 	"net/http"
 	"os"
 	"os/signal"
+	"strings"
 	"syscall"
 
 	"github.com/prometheus/client_golang/prometheus"
@@ -33,10 +35,14 @@ func init() {
 func main() {
 	stopping := false
 
-	fpingCmd := fping.NewFpingProcess()
+	network := getNetwork()
+
+	fpingCmd := fping.NewFpingProcess(network)
 	if err := fpingCmd.Start(); err != nil {
 		log.Fatal(err)
 	}
+
+	fmt.Printf("Started scan of network %s\n", network)
 
 	signals := make(chan os.Signal, 1)
 	signal.Notify(signals, os.Interrupt, syscall.SIGTERM, syscall.SIGINT)
@@ -60,4 +66,45 @@ func main() {
 			responseTimes.WithLabelValues(response.IP.String()).Observe(response.Roundtrip.Seconds())
 		}
 	}
+}
+
+func getNetwork() string {
+	network, exists := os.LookupEnv("NETWORK")
+	if exists {
+		return network
+	}
+	network, err := getFirstEthernetNetwork()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	return network
+}
+
+func getFirstEthernetNetwork() (string, error) {
+	ifaces, err := net.Interfaces()
+	if err != nil {
+		return "", err
+	}
+	for _, iface := range ifaces {
+		if iface.Flags&net.FlagLoopback != 0 {
+			continue
+		}
+		if iface.Flags&net.FlagPointToPoint != 0 {
+			continue
+		}
+		addrs, err := iface.Addrs()
+		if err != nil {
+			return "", err
+		}
+		for _, addr := range addrs {
+			ip := net.ParseIP(strings.Split(addr.String(), "/")[0])
+			ipv4 := ip.To4()
+			if ipv4 == nil {
+				continue
+			}
+			return addr.String(), nil
+		}
+	}
+	return "", nil
 }
