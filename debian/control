@@ -1,0 +1,5 @@
+Package: prometheus-fping
+Architecture: all
+Maintainer: linus <linus@noomi.com>
+Depends: fping
+Description: Ping the entire network and report the results to prometheus
