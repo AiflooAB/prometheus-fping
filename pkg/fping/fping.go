@@ -2,7 +2,6 @@ package fping
 
 import (
 	"bufio"
-	"fmt"
 	"log"
 	"os/exec"
 	"syscall"
@@ -32,7 +31,6 @@ func (fping *FpingProcess) Start() error {
 	}
 	scanner := bufio.NewScanner(stdout)
 	go func() {
-		defer fmt.Println("Shutdowned")
 		for scanner.Scan() {
 			line := scanner.Text()
 			resp := Parseline(line)
@@ -46,7 +44,6 @@ func (fping *FpingProcess) Start() error {
 }
 
 func (fping *FpingProcess) Stop() {
-	defer fmt.Println("Stop() done")
 	fping.cmd.Process.Signal(syscall.SIGTERM)
 	fping.cmd.Process.Wait()
 }
