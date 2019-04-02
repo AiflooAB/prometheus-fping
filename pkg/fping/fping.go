@@ -31,9 +31,11 @@ func (fping *FpingProcess) Start() error {
 	if err != nil {
 		return err
 	}
-	if err := fping.cmd.Start(); err != nil {
-		return err
-	}
+	go func() {
+		if err := fping.cmd.Run(); err != nil {
+			log.Fatal(err)
+		}
+	}()
 	scanner := bufio.NewScanner(stdout)
 	go func() {
 		for scanner.Scan() {
