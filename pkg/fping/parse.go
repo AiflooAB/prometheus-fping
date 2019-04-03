@@ -3,6 +3,8 @@ package fping
 import (
 	"fmt"
 	"net"
+	"os"
+	"strings"
 	"time"
 )
 
@@ -11,6 +13,10 @@ type Response struct {
 	count     int
 	size      int8
 	Roundtrip time.Duration
+}
+
+type UnreachableResponse struct {
+	IP net.IP
 }
 
 func (resp *Response) String() string {
@@ -33,4 +39,24 @@ func Parseline(line string) *Response {
 		size:      bytes,
 		Roundtrip: time.Duration(roundtrip*1e6) * time.Nanosecond,
 	}
+}
+
+func ParseStderr(line string) *UnreachableResponse {
+	if len(line) == 0 {
+		return nil
+	}
+	if strings.Contains(line, "ICMP Host Unreachable") {
+		var from string
+		var to string
+		fmt.Sscanf(line, "ICMP Host Unreachable from %s for ICMP Echo sent to %s", &from, &to)
+		return &UnreachableResponse{
+			IP: net.ParseIP(to),
+		}
+	}
+	// Ignore summary lines
+	if strings.Contains(line, "xmt/rcv/%loss") {
+		return nil
+	}
+	fmt.Fprintf(os.Stderr, "Failed to parse line: '%s'\n", line)
+	return nil
 }

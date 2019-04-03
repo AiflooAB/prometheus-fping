@@ -26,10 +26,19 @@ var (
 		},
 		[]string{"ip"},
 	)
+	unreachable = prometheus.NewCounterVec(
+		prometheus.CounterOpts{
+			Namespace: "fping",
+			Name:      "requests_noreply_count",
+			Help:      "Number of requests missed",
+		},
+		[]string{"ip"},
+	)
 )
 
 func init() {
 	prometheus.MustRegister(responseTimes)
+	prometheus.MustRegister(unreachable)
 }
 
 func main() {
@@ -64,7 +73,10 @@ func main() {
 			return
 		case response := <-fpingCmd.Responses:
 			responseTimes.WithLabelValues(response.IP.String()).Observe(response.Roundtrip.Seconds())
+		case response := <-fpingCmd.Unreachables:
+			unreachable.WithLabelValues(response.IP.String()).Inc()
 		}
+
 	}
 }
 
