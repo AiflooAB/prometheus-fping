@@ -76,6 +76,7 @@ func main() {
 			unreachable.WithLabelValues(response.IP.String()).Add(0)
 		case response := <-fpingCmd.Unreachables:
 			unreachable.WithLabelValues(response.IP.String()).Inc()
+			responseTimes.WithLabelValues(response.IP.String())
 		}
 
 	}
