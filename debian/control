@@ -1,5 +1,5 @@
 Package: prometheus-fping
 Architecture: all
 Maintainer: linus <linus@noomi.com>
-Depends: fping
+Depends: fping (>= 4.0)
 Description: Ping the entire network and report the results to prometheus
